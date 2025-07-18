@@ -119,49 +119,263 @@ fn encode_j_type(imm: i32, rd: &str, opcode: &str) -> u32 {
 
 fn encode_instruction(
     opcode: &str,
-    rd: &str,
-    rs1: &str,
-    rs2: &str,
-    imm: i32,
+    rd: Option<&str>,
+    rs1: Option<&str>,
+    rs2: Option<&str>,
+    imm: Option<i32>,
 ) -> Result<u32, String> {
     match opcode {
-        "add" => Ok(encode_r_type("0000000", rs2, rs1, "000", rd, "0110011")),
-        "sub" => Ok(encode_r_type("0100000", rs2, rs1, "000", rd, "0110011")),
-        "and" => Ok(encode_r_type("0000000", rs2, rs1, "111", rd, "0110011")),
-        "or" => Ok(encode_r_type("0000000", rs2, rs1, "110", rd, "0110011")),
-        "xor" => Ok(encode_r_type("0000000", rs2, rs1, "100", rd, "0110011")),
-        "sll" => Ok(encode_r_type("0000000", rs2, rs1, "001", rd, "0110011")),
-        "srl" => Ok(encode_r_type("0000000", rs2, rs1, "101", rd, "0110011")),
-        "sra" => Ok(encode_r_type("0100000", rs2, rs1, "101", rd, "0110011")),
-        "slt" => Ok(encode_r_type("0000000", rs2, rs1, "010", rd, "0110011")),
-        "sltu" => Ok(encode_r_type("0000000", rs2, rs1, "011", rd, "0110011")),
-        "addi" => Ok(encode_i_type(imm, rs1, "000", rd, "0010011")),
-        "andi" => Ok(encode_i_type(imm, rs1, "111", rd, "0010011")),
-        "ori" => Ok(encode_i_type(imm, rs1, "110", rd, "0010011")),
-        "xori" => Ok(encode_i_type(imm, rs1, "100", rd, "0010011")),
-        "slli" => Ok(encode_i_type(imm & 0x1F, rs1, "001", rd, "0010011")),
-        "srli" => Ok(encode_i_type(imm & 0x1F, rs1, "101", rd, "0010011")),
-        "srai" => Ok(encode_i_type(imm & 0x1F | 0x400, rs1, "101", rd, "0010011")),
-        "slti" => Ok(encode_i_type(imm, rs1, "010", rd, "0010011")),
-        "sltiu" => Ok(encode_i_type(imm, rs1, "011", rd, "0010011")),
-        "lb" => Ok(encode_i_type(imm, rs1, "000", rd, "0000011")),
-        "lbu" => Ok(encode_i_type(imm, rs1, "100", rd, "0000011")),
-        "lh" => Ok(encode_i_type(imm, rs1, "001", rd, "0000011")),
-        "lhu" => Ok(encode_i_type(imm, rs1, "101", rd, "0000011")),
-        "lw" => Ok(encode_i_type(imm, rs1, "010", rd, "0000011")),
-        "jalr" => Ok(encode_i_type(imm, rs1, "000", rd, "1100111")),
-        "sb" => Ok(encode_s_type(imm, rs2, rs1, "000", "0100011")),
-        "sh" => Ok(encode_s_type(imm, rs2, rs1, "001", "0100011")),
-        "sw" => Ok(encode_s_type(imm, rs2, rs1, "010", "0100011")),
-        "beq" => Ok(encode_b_type(imm, rs2, rs1, "000", "1100011")),
-        "bne" => Ok(encode_b_type(imm, rs2, rs1, "001", "1100011")),
-        "blt" => Ok(encode_b_type(imm, rs2, rs1, "100", "1100011")),
-        "bltu" => Ok(encode_b_type(imm, rs2, rs1, "110", "1100011")),
-        "bge" => Ok(encode_b_type(imm, rs2, rs1, "101", "1100011")),
-        "bgeu" => Ok(encode_b_type(imm, rs2, rs1, "111", "1100011")),
-        "lui" => Ok(encode_u_type(imm, rd, "0110111")),
-        "auipc" => Ok(encode_u_type(imm, rd, "0010111")),
-        "jal" => Ok(encode_j_type(imm, rd, "1101111")),
+        "add" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "000",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "sub" => Ok(encode_r_type(
+            "0100000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "000",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "and" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "111",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "or" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "110",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "xor" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "100",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "sll" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "001",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "srl" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "101",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "sra" => Ok(encode_r_type(
+            "0100000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "101",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "slt" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "010",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "sltu" => Ok(encode_r_type(
+            "0000000",
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "011",
+            rd.unwrap(),
+            "0110011",
+        )),
+        "addi" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "000",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "andi" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "111",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "ori" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "110",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "xori" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "100",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "slli" => Ok(encode_i_type(
+            imm.unwrap() & 0x1F,
+            rs1.unwrap(),
+            "001",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "srli" => Ok(encode_i_type(
+            imm.unwrap() & 0x1F,
+            rs1.unwrap(),
+            "101",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "srai" => Ok(encode_i_type(
+            imm.unwrap() & 0x1F | 0x400,
+            rs1.unwrap(),
+            "101",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "slti" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "010",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "sltiu" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "011",
+            rd.unwrap(),
+            "0010011",
+        )),
+        "lb" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "000",
+            rd.unwrap(),
+            "0000011",
+        )),
+        "lbu" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "100",
+            rd.unwrap(),
+            "0000011",
+        )),
+        "lh" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "001",
+            rd.unwrap(),
+            "0000011",
+        )),
+        "lhu" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "101",
+            rd.unwrap(),
+            "0000011",
+        )),
+        "lw" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "010",
+            rd.unwrap(),
+            "0000011",
+        )),
+        "jalr" => Ok(encode_i_type(
+            imm.unwrap(),
+            rs1.unwrap(),
+            "000",
+            rd.unwrap(),
+            "1100111",
+        )),
+        "sb" => Ok(encode_s_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "000",
+            "0100011",
+        )),
+        "sh" => Ok(encode_s_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "001",
+            "0100011",
+        )),
+        "sw" => Ok(encode_s_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "010",
+            "0100011",
+        )),
+        "beq" => Ok(encode_b_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "000",
+            "1100011",
+        )),
+        "bne" => Ok(encode_b_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "001",
+            "1100011",
+        )),
+        "blt" => Ok(encode_b_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "100",
+            "1100011",
+        )),
+        "bltu" => Ok(encode_b_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "110",
+            "1100011",
+        )),
+        "bge" => Ok(encode_b_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "101",
+            "1100011",
+        )),
+        "bgeu" => Ok(encode_b_type(
+            imm.unwrap(),
+            rs2.unwrap(),
+            rs1.unwrap(),
+            "111",
+            "1100011",
+        )),
+        "lui" => Ok(encode_u_type(imm.unwrap(), rd.unwrap(), "0110111")),
+        "auipc" => Ok(encode_u_type(imm.unwrap(), rd.unwrap(), "0010111")),
+        "jal" => Ok(encode_j_type(imm.unwrap(), rd.unwrap(), "1101111")),
         _ => Err(format!("Unknown opcode: {opcode}")),
     }
 }
@@ -248,17 +462,34 @@ fn main() {
 
             match opcode {
                 "add" | "sub" | "and" | "or" | "xor" | "sll" | "srl" | "sra" | "slt" | "sltu" => {
-                    binary_inst =
-                        encode_instruction(opcode, first_item, second_item, third_item, -1);
+                    binary_inst = encode_instruction(
+                        opcode,
+                        Some(first_item),
+                        Some(second_item),
+                        Some(third_item),
+                        None,
+                    );
                 }
                 "addi" | "andi" | "ori" | "xori" | "slli" | "srli" | "srai" | "slti" | "sltiu"
                 | "jalr" => {
                     let imm = parse_number(third_item).unwrap();
-                    binary_inst = encode_instruction(opcode, first_item, second_item, "x0", imm);
+                    binary_inst = encode_instruction(
+                        opcode,
+                        Some(first_item),
+                        Some(second_item),
+                        None,
+                        Some(imm),
+                    );
                 }
                 "beq" | "bne" | "blt" | "bltu" | "bge" | "bgeu" => {
                     let imm = labels.get(third_item).unwrap() - address;
-                    binary_inst = encode_instruction(opcode, "x0", first_item, second_item, imm);
+                    binary_inst = encode_instruction(
+                        opcode,
+                        None,
+                        Some(first_item),
+                        Some(second_item),
+                        Some(imm),
+                    );
                 }
                 _ => {
                     panic!("Unsupported Instruction: {line}")
@@ -271,36 +502,64 @@ fn main() {
             match opcode {
                 "li" => {
                     let imm: i32 = parse_number(second_item).unwrap();
-                    binary_inst = encode_instruction("addi", first_item, "x0", "x0", imm);
+                    binary_inst =
+                        encode_instruction("addi", Some(first_item), Some("zero"), None, Some(imm));
                 }
                 "mv" => {
-                    binary_inst = encode_instruction("add", first_item, second_item, "x0", -1);
+                    binary_inst = encode_instruction(
+                        "addi",
+                        Some(first_item),
+                        Some(second_item),
+                        None,
+                        Some(0),
+                    );
                 }
                 "not" => {
-                    binary_inst = encode_instruction("xori", first_item, second_item, "x0", -1);
+                    binary_inst = encode_instruction(
+                        "xori",
+                        Some(first_item),
+                        Some(second_item),
+                        None,
+                        Some(-1),
+                    );
                 }
                 "neg" => {
-                    binary_inst = encode_instruction("sub", first_item, "x0", second_item, -1);
+                    binary_inst = encode_instruction(
+                        "sub",
+                        Some(first_item),
+                        Some("zero"),
+                        Some(second_item),
+                        None,
+                    );
                 }
                 "jal" => {
                     let imm = labels.get(second_item).unwrap() - address;
-                    binary_inst = encode_instruction(opcode, first_item, "x0", "x0", imm);
+                    binary_inst =
+                        encode_instruction(opcode, Some(first_item), None, None, Some(imm));
+                }
+                "beqz" => {
+                    let imm = labels.get(second_item).unwrap() - address;
+                    binary_inst =
+                        encode_instruction("beq", None, Some(first_item), Some("zero"), Some(imm));
                 }
                 "lui" | "auipc" => {
                     let imm = parse_number(second_item).unwrap();
-                    binary_inst = encode_instruction(opcode, first_item, "x0", "x0", imm);
+                    binary_inst =
+                        encode_instruction(opcode, Some(first_item), None, None, Some(imm));
                 }
                 "lb" | "lbu" | "lh" | "lhu" | "lw" | "jalr" => {
                     let (imm, rs1) = second_item.split_once('(').unwrap();
                     let imm = parse_number(imm).unwrap();
                     let rs1 = rs1.split(')').next().unwrap();
-                    binary_inst = encode_instruction(opcode, first_item, rs1, "x0", imm);
+                    binary_inst =
+                        encode_instruction(opcode, Some(first_item), Some(rs1), None, Some(imm));
                 }
                 "sb" | "sh" | "sw" => {
                     let (imm, rs1) = second_item.split_once('(').unwrap();
                     let imm = parse_number(imm).unwrap();
                     let rs1 = rs1.split(')').next().unwrap();
-                    binary_inst = encode_instruction(opcode, "x0", rs1, first_item, imm);
+                    binary_inst =
+                        encode_instruction(opcode, None, Some(rs1), Some(first_item), Some(imm));
                 }
                 _ => {
                     panic!("Unsupported Instruction: {line}")
@@ -312,11 +571,11 @@ fn main() {
             match opcode {
                 "jal" => {
                     let imm = labels.get(first_item).unwrap() - address;
-                    binary_inst = encode_instruction(opcode, "ra", "x0", "x0", imm);
+                    binary_inst = encode_instruction(opcode, Some("ra"), None, None, Some(imm));
                 }
                 "j" => {
                     let imm = labels.get(first_item).unwrap() - address;
-                    binary_inst = encode_instruction(opcode, "x0", "x0", "x0", imm);
+                    binary_inst = encode_instruction(opcode, Some("zero"), None, None, Some(imm));
                 }
                 _ => {
                     panic!("Unsupported Instruction: {line}")
