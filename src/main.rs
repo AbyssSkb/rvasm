@@ -178,13 +178,37 @@ fn parse_number(s: &str) -> Result<i32, ParseIntError> {
     }
 }
 
-fn main() {
+fn print_binary_instructions(binary_instructions: &Vec<String>, output_coe: bool) {
+    if output_coe {
+        println!("memory_initialization_radix = 16;");
+        println!("memory_initialization_vector =");
+        let len = binary_instructions.len();
+        for binary_instruction in binary_instructions {
+            if *binary_instruction == binary_instructions[len - 1] {
+                println!("{binary_instruction};")
+            } else {
+                println!("{binary_instruction},");
+            }
+        }
+    } else {
+        for binary_instruction in binary_instructions {
+            println!("{binary_instruction}");
+        }
+    }
+}
+
+fn parse_arguments() -> (String, bool) {
     let args: Vec<String> = env::args().collect();
     if args.len() == 1 {
         panic!("Please specify the input file")
     }
-    let file_path = &args[1];
+    let file_path = args[1].clone();
     let output_coe = args.len() == 3 && &args[2] == "--coe";
+    (file_path, output_coe)
+}
+
+fn main() {
+    let (file_path, output_coe) = parse_arguments();
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
     let mut labels = HashMap::new();
     let mut address = 0;
@@ -306,20 +330,5 @@ fn main() {
         address += 4;
     }
 
-    if output_coe {
-        println!("memory_initialization_radix = 16;");
-        println!("memory_initialization_vector =");
-        let len = binary_instructions.len();
-        for binary_instruction in &binary_instructions {
-            if *binary_instruction == binary_instructions[len - 1] {
-                println!("{binary_instruction};")
-            } else {
-                println!("{binary_instruction},");
-            }
-        }
-    } else {
-        for binary_instruction in binary_instructions {
-            println!("{binary_instruction}");
-        }
-    }
+    print_binary_instructions(&binary_instructions, output_coe);
 }
